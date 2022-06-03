@@ -1,6 +1,6 @@
 <?php
 
-class PluginGroupcategoryGroupcategory extends CommonDBTM {
+class PluginEntitycategoryEntitycategory extends CommonDBTM {
 
     /**
      * All categories
@@ -14,14 +14,14 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
      * @return array
      */
     public static function getAllCategories() {
-        if (empty(PluginGroupcategoryGroupcategory::$_all_categories)) {
+        if (empty(PluginEntitycategoryEntitycategory::$_all_categories)) {
             $category = new ITILCategory();
             $categories = $category->find([],"completename ASC, level ASC, id ASC");
 
             self::$_all_categories = $categories;
         }
 
-        return PluginGroupcategoryGroupcategory::$_all_categories;
+        return PluginEntitycategoryEntitycategory::$_all_categories;
     }
 
     /**
@@ -31,7 +31,7 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
      * @return array
      */
     public static function getSelectedCategoriesForEntity(Entity $entity) {
-        $entity_category = new PluginGroupcategoryGroupcategory();
+        $entity_category = new PluginEntitycategoryEntitycategory();
 
         if ($entity_category->getFromDBByCrit(["entity_id" => $entity->getId()])) {
             $category_ids = explode(', ', $entity_category->fields['category_ids']);
@@ -85,11 +85,11 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
         if (!is_array($params['item'])) {
             switch ($params['item']->getType()) {
                 case 'Entity':
-                    plugin_groupcategory_post_show_group($params['item']);
+                    plugin_entitycategory_post_show_entity($params['item']);
                     break;
 
                 case 'Ticket':
-                    plugin_groupcategory_post_show_ticket($params['item']);
+                    plugin_entitycategory_post_show_ticket($params['item']);
                     break;
                 default:
                 // nothing to do
@@ -104,11 +104,11 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
         if (!is_array($params['item'])) {
             switch ($params['item']->getType()) {
                 case 'Entity':
-                    plugin_groupcategory_post_show_group($params['item']);
+                    plugin_entitycategory_post_show_entity($params['item']);
                     break;
 
                 case 'Ticket':                    
-                    plugin_groupcategory_post_show_ticket($params['item']);
+                    plugin_entitycategory_post_show_ticket($params['item']);
                     break;
                 default:
                 // nothing to do

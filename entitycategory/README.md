@@ -1,2 +1,2 @@
-Modification Group Category
+GLPI entityCategory Plugin
 =========================
