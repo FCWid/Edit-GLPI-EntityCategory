@@ -14,10 +14,10 @@ function plugin_groupcategory_install()
             CREATE TABLE IF NOT EXISTS `" . getTableForItemType('PluginGroupcategoryGroupcategory') . "`
             (
                 `id` INT(11) NOT NULL AUTO_INCREMENT,
-                `entity_id` INT(11) NOT NULL,
+                `entities_id` INT(11) NOT NULL,
                 `category_ids` TEXT NOT NULL,
                 PRIMARY KEY (`id`),
-                INDEX (`entity_id`)
+                INDEX (`entities_id`)
             )
             COLLATE='utf8_unicode_ci'
             ENGINE=InnoDB
