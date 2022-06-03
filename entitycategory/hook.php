@@ -8,16 +8,16 @@
 function plugin_groupcategory_install()
 {
     global $DB;
-// CHANGER group_id en entity_id
+
     if (!$DB->tableExists(getTableForItemType('PluginGroupcategoryGroupcategory'))) {
         $create_table_query = "
             CREATE TABLE IF NOT EXISTS `" . getTableForItemType('PluginGroupcategoryGroupcategory') . "`
             (
                 `id` INT(11) NOT NULL AUTO_INCREMENT,
-                `entities_id` INT(11) NOT NULL,
+                `entity_id` INT(11) NOT NULL,
                 `category_ids` TEXT NOT NULL,
                 PRIMARY KEY (`id`),
-                INDEX (`entities_id`)
+                INDEX (`entity_id`)
             )
             COLLATE='utf8_unicode_ci'
             ENGINE=InnoDB
@@ -48,14 +48,14 @@ function plugin_groupcategory_uninstall()
 
 /**
  * Hook callback when a group is shown
- * -> a changer en "an entity is shown"
- * @param Entity $entity
+ *
+ * @param Group $group
  */
-function plugin_groupcategory_post_show_group(Entity $entity)
+function plugin_groupcategory_post_show_group(Group $group)
 {
-    if ($entity->getId() > 0) {
+    if ($group->getId() > 0) {
         $categories = PluginGroupcategoryGroupcategory::getAllCategories();
-        $selected_categories = PluginGroupcategoryGroupcategory::getSelectedCategoriesForEntity($entity);
+        $selected_categories = PluginGroupcategoryGroupcategory::getSelectedCategoriesForGroup($group);
         $dom = '';
         $dom .= '<div id="groupcategory_content">';
         $dom .= '<table class="tab_cadre_fixe" >' . "\n";
@@ -198,31 +198,31 @@ function plugin_groupcategory_post_show_group(Entity $entity)
 
 /**
  * Hook callback before a group is updated
- * -> A changer en "an entity is updated"
- * @param Entity $entity
+ *
+ * @param Group $group
  */
-function plugin_groupcategory_group_update(Entity $entity)
+function plugin_groupcategory_group_update(Group $group)
 {
-    if (isset($entity->input['groupcategory_allowed_categories'])) {
-        $allowed_categories_ids = trim($entity->input['groupcategory_allowed_categories']);
+    if (isset($group->input['groupcategory_allowed_categories'])) {
+        $allowed_categories_ids = trim($group->input['groupcategory_allowed_categories']);
 
-        $selected_categories = PluginGroupcategoryGroupcategory::getSelectedCategoriesForEntity($entity);
+        $selected_categories = PluginGroupcategoryGroupcategory::getSelectedCategoriesForGroup($group);
         $selected_categories_ids = implode(', ', array_keys($selected_categories));
 
         if ($allowed_categories_ids != $selected_categories_ids) {
-            $entity_category = new PluginGroupcategoryGroupcategory();
-            //$exists = $entity_category->getFromDBByQuery("WHERE TRUE AND entity_id = " . $entity->getId());
-            $exists = $entity_category->getFromDBByCrit(["entity_id" => $entity->getId()]);
-            $entity_update_params = [
-                'entity_id' => $entity->getId(),
+            $group_category = new PluginGroupcategoryGroupcategory();
+            //$exists = $group_category->getFromDBByQuery("WHERE TRUE AND entity_id = " . $group->getId());
+            $exists = $group_category->getFromDBByCrit(["entity_id" => $group->getId()]);
+            $group_update_params = [
+                'entity_id' => $group->getId(),
                 'category_ids' => $allowed_categories_ids,
             ];
 
             if ($exists) {
-                $entity_update_params['id'] = $entity_category->getId();
-                $entity_category->update($entity_update_params, [], false);
+                $group_update_params['id'] = $group_category->getId();
+                $group_category->update($group_update_params, [], false);
             } else {
-                $entity_category->add($entity_update_params, [], false);
+                $group_category->add($group_update_params, [], false);
             }
         }
     }

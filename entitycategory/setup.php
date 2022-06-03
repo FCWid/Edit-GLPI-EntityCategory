@@ -7,6 +7,8 @@ define('PLUGIN_GROUPCATEGORY_NAMESPACE', 'groupcategory');
 // Maximum GLPI version, exclusive
 define("PLUGIN_GROUPCATEGORY_GLPI_MAX_VERSION", "9.6");
 
+
+// Pas besoin de changer (on ne touche pas le nom du plugin)
 if (!defined("PLUGIN_GROUPCATEGORY_DIR")) {
     define("PLUGIN_GROUPCATEGORY_DIR", Plugin::getPhpDir("groupcategory"));
 }

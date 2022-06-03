@@ -25,16 +25,16 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
     }
 
     /**
-     * Get the selected categories for an entity
+     * Get the selected categories for a group
      *
-     * @param  Entity $entity
+     * @param  Group $group
      * @return array
      */
-    public static function getSelectedCategoriesForEntity(Entity $entity) {
-        $entity_category = new PluginGroupcategoryGroupcategory();
+    public static function getSelectedCategoriesForGroup(Group $group) {
+        $group_category = new PluginGroupcategoryGroupcategory();
 
-        if ($entity_category->getFromDBByCrit(["entity_id" => $entity->getId()])) {
-            $category_ids = explode(', ', $entity_category->fields['category_ids']);
+        if ($group_category->getFromDBByCrit(["entity_id" => $group->getId()])) {
+            $category_ids = explode(', ', $group_category->fields['category_ids']);
             $all_categories = self::getAllCategories();
             $selected_categories = [];
             foreach ($all_categories as $details) {
@@ -61,12 +61,12 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
         $user = new User();
 
         if ($user->getFromDB($user_id)) {
-            $user_entities = Entity_User::getUserEntities($user_id);
+            $user_groups = Group_User::getUserGroups($user_id);
 
-            foreach ($user_entities as $entity_data) {
-                $entity = new Entity();
-                if ($entity->getFromDB($entity_data['id'])) {
-                    $categories = self::getSelectedCategoriesForEntity($entity);
+            foreach ($user_groups as $group_data) {
+                $group = new Group();
+                if ($group->getFromDB($group_data['id'])) {
+                    $categories = self::getSelectedCategoriesForGroup($group);
                     $user_categories += $categories;
                 }
             }
@@ -84,7 +84,7 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
 
         if (!is_array($params['item'])) {
             switch ($params['item']->getType()) {
-                case 'Entity':
+                case 'Group':
                     plugin_groupcategory_post_show_group($params['item']);
                     break;
 
@@ -103,7 +103,7 @@ class PluginGroupcategoryGroupcategory extends CommonDBTM {
     static function post_item_form($params) {
         if (!is_array($params['item'])) {
             switch ($params['item']->getType()) {
-                case 'Entity':
+                case 'Group':
                     plugin_groupcategory_post_show_group($params['item']);
                     break;
 
